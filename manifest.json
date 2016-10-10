@@ -8,12 +8,17 @@
   "browser_action": {
     "default_icon": "bid.png"
   },
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
+  "content_scripts": [
+	{
+		"matches": ["http://fr.oopad.com/*/?DId=*"],
+		"js": ["script.js"]
+	}
+  ],
   "permissions": [
     "activeTab",
 	"tabs"
+  ],
+  "web_accessible_resources": [
+	  "autobid.js"
   ]
 }
