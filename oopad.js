@@ -3,82 +3,64 @@
  * with oopad function
  */
 
-// Variables declation
-var BID_TRIGGER_COUNT_DOWN = 5;
-var ACHECK_LIMIT = 10;			// If the countdown is under this limit, do an active check
-var ACHECK_PERIOD = 1000;		// In ms
-var max_countdown = 45;       // TODO How to get the max time
-var max_try = 80;
+/* Constants */
+var BIDING_ZONE = 5;            // If countdown if <= this limit then place a bid
+var MONITORING_ZONE = 10;		// If countdown is <= this limit then check each MONITORING_PERIOD if placing a bid is necessary
+var MONITORING_PERIOD = 1000;	// Time in ms, (cf MONITORING_ZONE desc)
 
+/*  Variable Global */
+var intervalID = null
+
+/*
+ * @Desc: Get Auction ID from url
+ */
 function _getAuctionIdFromUrl() {
-	// Get Auction ID from url 
 	var query = window.location.search.substring(1);
 	var pair = query.split("=");
 	return pair[1];
 }
 
+/*
+ * @Desc: Get countdown value
+ *        Thanks to oopad for getCountdownValue func
+ */
 function _getCountDownValue(b) {
 	var f = jQuery("#Auction_" + b + " .Timer");
 	var g = f.countdown().getCountdownValue();
 	return g
 }
 
-var i=0;
-var intervalID = null
-function _bid(b) {
-	++i;
+/*
+ * @Desc Place a bid automatically
+ */
+function _autoBid(b) {
 	var count_down = _getCountDownValue(auctionId);
 	console.log(count_down);
-	if (count_down <= ACHECK_LIMIT ) {
+	if (count_down == null)
+	{
+		// Case: Bid is paused
+		console.log("Not implemented yet");
+	}
+	else if (count_down <= MONITORING_ZONE)
+	{
+		// Case: Watch carefully (check each MONITORING_ZONE)
 		if (intervalID == null) {
-            intervalID = setInterval(function(){ _bid(auctionId) }, ACHECK_PERIOD);
+            intervalID = setInterval(function(){ _autoBid(auctionId) }, MONITORING_PERIOD);
 		}
-		if (count_down <= BID_TRIGGER_COUNT_DOWN) {
-		    console.log("Let us bid " + b);
+		if (count_down <= BIDING_ZONE) {
+		    console.log("Place a bid " + b);
+			// Place bid :placeBid(58237)
 		}
-	} else {
-		setTimeout(function(){ console.log("New Check"); }, (count_down - ACHECK_LIMIT) * 1000 );
+	}
+	else
+	{
+		// Case: Wait until the Watch carefully timezone
+		setTimeout(function(){ console.log("New Check"); }, (count_down - MONITORING_ZONE) * 1000 );
 		clearInterval(intervalID);
 		intervalID = null
+		// Refresh page : window.location.reload()
 	}
-	if(i === max_try) clearInterval(intervalID);
 }
 
 auctionId = parseInt(_getAuctionIdFromUrl());
-_bid(auctionId)
-
-if (count_down >= active_check_limit) {
-   // Wait some times
-// Actualise page : window.location.reload()
-} else {
-	// Perform the active check
-	var intervalID = setInterval(function(){ myTimer() }, ACHECK_PERIOD);
-	clearInterval(myVar);
-}	
-
-// END
-var end = false;
-var BID_LIMIT = 1
-
-// sleep time expects milliseconds
-function sleep (time) {
-   return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-var max = 100;
-var i=0;
-var wait = 8000;
-
-while (i < max) {
-    sleep(wait).then(() => {
-		var timer = document.getElementsByClassName("Value timerSec")[1].innerText;
-		console.log(timer);
-		if (parseInt(timer) <= BID_LIMIT ) {
-			placeBid(_auctionId);
-		}
-	});
-	i+=1;
-	console.log(i)
-}
-
-// Place bid :placeBid(58237)
+_autoBid(auctionId)
