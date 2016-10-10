@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "OOpad Bid Watcher",
+  "description": "Extension for automatically bidding on the OOpad site",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "bid.png"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "activeTab",
+	"tabs"
+  ]
+}
