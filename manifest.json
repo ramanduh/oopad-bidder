@@ -6,7 +6,7 @@
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "bid.png"
+	"default_popup": "popup.html"
   },
   "content_scripts": [
 	{
@@ -15,8 +15,7 @@
 	}
   ],
   "permissions": [
-    "activeTab",
-	"tabs"
+    "activeTab"
   ],
   "web_accessible_resources": [
 	  "autobid.js"
